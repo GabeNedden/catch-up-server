@@ -17,7 +17,10 @@ express()
   .use(express.static("public"))
 
   .get("/", (req, res) => {
-    res.send("You have arrived");
+    res.status(200).json({
+      status: 200,
+      message: "Hello we are in the testing phase",
+    });
   })
 
   // this is our catch all endpoint.
