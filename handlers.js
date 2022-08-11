@@ -1,7 +1,7 @@
 const { MongoClient } = require("mongodb");
 
 require("dotenv").config();
-const MONGO_URI = process.env.MONGO_URI;
+const { MONGO_URI } = process.env;
 
 const options = {
   useNewUrlParser: true,
@@ -16,29 +16,15 @@ const test = async (req, res) => {
     const db = client.db("catchup");
     console.log("connected");
 
-    res.send("You have arrived");
+    return res.status(200).json({ status: 200, message: "You have arrived" });
   } catch (err) {
-    res.send(err);
+    console.log(err);
+  } finally {
+    await client.close();
+    console.log("disconnected");
   }
 };
 
 module.exports = {
   test,
 };
-
-// const test = async (req, res) => {
-//     const client = new MongoClient(MONGO_URI, options);
-
-//     try {
-//       await client.connect();
-//       const db = client.db("catchup");
-//       console.log("connected");
-
-//       res.send("You have arrived");
-//     } catch (err) {
-//       res.send(err);
-//     } finally {
-//       client.close();
-//       console.log("disconnected");
-//     }
-//   };
