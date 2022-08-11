@@ -16,7 +16,7 @@ const test = async (req, res) => {
     const db = client.db("catchup");
     console.log("connected");
 
-    res.send.json({ status: 200, message: "You have arrived" });
+    res.send("You have arrived");
   } catch (err) {
     console.log(err);
   } finally {
