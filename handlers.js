@@ -9,22 +9,30 @@ const options = {
 };
 
 const test = async (req, res) => {
-  const client = new MongoClient(MONGO_URI, options);
-
   try {
-    await client.connect();
-    const db = client.db("catchup");
-    console.log("connected");
-
     res.send("You have arrived");
   } catch (err) {
-    console.log(err);
-  } finally {
-    client.close();
-    console.log("disconnected");
+    res.send(err);
   }
 };
 
 module.exports = {
   test,
 };
+
+// const test = async (req, res) => {
+//     const client = new MongoClient(MONGO_URI, options);
+
+//     try {
+//       await client.connect();
+//       const db = client.db("catchup");
+//       console.log("connected");
+
+//       res.send("You have arrived");
+//     } catch (err) {
+//       res.send(err);
+//     } finally {
+//       client.close();
+//       console.log("disconnected");
+//     }
+//   };
