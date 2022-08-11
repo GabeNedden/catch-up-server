@@ -1,5 +1,6 @@
 {
   "name": "catch-up-server",
+  "proxy": "http://localhost:8000/",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

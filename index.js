@@ -6,7 +6,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 let port = process.env.PORT || 8000;
 
-const { test, getPosts, getAuthUser } = require("./handlers");
+const { test, getPosts, getAuthUser, login } = require("./handlers");
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -15,9 +15,7 @@ express()
   .use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Methods",
-      "OPTIONS, HEAD, GET, PUT, POST, DELETE"
-    );
-    res.header(
+      "OPTIONS, HEAD, GET, PUT, POST, DELETE",
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept"
     );
@@ -36,6 +34,8 @@ express()
   .get("/", test)
   .get("/posts", getPosts)
   .get("/user/:authid", getAuthUser)
+
+  .post("/login/", login)
 
   // this is our catch all endpoint.
   .get("*", (req, res) => {
