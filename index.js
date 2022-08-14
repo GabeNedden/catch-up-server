@@ -39,7 +39,7 @@ express()
   .use("/", express.static(__dirname + "/"))
 
   .get("/", test)
-  .get("groups", getGroups)
+  .get("/groups", getGroups)
   .get("/posts", getPosts)
   .get("/users", getAllUsers)
   .get("/user/:authid", getAuthUser)
