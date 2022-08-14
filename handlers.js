@@ -60,6 +60,24 @@ const getPosts = async (req, res) => {
   }
 };
 
+const getGroups = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const response = await db.collection("groups").find().toArray();
+
+    res.status(200).json({ status: 200, data: response });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 const getAuthUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -152,6 +170,7 @@ module.exports = {
   test,
   getAllUsers,
   getAuthUser,
+  getGroups,
   getPosts,
   login,
 };

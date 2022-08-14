@@ -8,6 +8,7 @@ let port = process.env.PORT || 8000;
 
 const {
   test,
+  getGroups,
   getPosts,
   getAllUsers,
   getAuthUser,
@@ -38,6 +39,7 @@ express()
   .use("/", express.static(__dirname + "/"))
 
   .get("/", test)
+  .get("groups", getGroups)
   .get("/posts", getPosts)
   .get("/users", getAllUsers)
   .get("/user/:authid", getAuthUser)
