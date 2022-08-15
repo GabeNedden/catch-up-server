@@ -4,7 +4,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-let port = process.env.PORT || 8000;
+let port = process.env.PORT || 8001;
 
 const {
   test,
@@ -42,7 +42,7 @@ express()
   .get("/groups", getGroups)
   .get("/posts", getPosts)
   .get("/users", getAllUsers)
-  .get("/user/:authid", getAuthUser)
+  .get("/user/:id", getAuthUser)
 
   .post("/login/", login)
 

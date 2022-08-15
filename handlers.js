@@ -81,15 +81,15 @@ const getGroups = async (req, res) => {
 const getAuthUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
-    const { authid } = req.params;
+    const { id } = req.params;
 
     await client.connect();
     const db = client.db("catchup");
     console.log("connected");
 
-    const query = { _id: ObjectId(authid) };
+    const query = { _id: ObjectId(id) };
 
-    const response = await db.collection("users").findOne(query);
+    const response = await db.collection("myusers").findOne(query);
 
     res.status(200).json({ status: 200, data: response });
   } catch (err) {
