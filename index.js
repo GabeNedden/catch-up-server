@@ -8,6 +8,7 @@ let port = process.env.PORT || 8001;
 
 const {
   test,
+  friendRequest,
   getGroups,
   getPosts,
   getAllUsers,
@@ -45,6 +46,7 @@ express()
   .get("/user/:id", getAuthUser)
 
   .post("/login/", login)
+  .post("/friendrequest", friendRequest)
 
   // this is our catch all endpoint.
   .get("*", (req, res) => {
