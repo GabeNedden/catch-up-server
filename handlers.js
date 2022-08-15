@@ -27,16 +27,99 @@ const test = async (req, res) => {
 const friendRequest = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
-    const { userId, targetUserId } = req.body;
+    const { userId, username, targetUserId, targetUsername } = req.body;
 
     await client.connect();
     const db = client.db("catchup");
     console.log("connected");
 
-    console.log("userId", userId);
-    console.log("target", targetUserId);
+    const userFilter = { _id: ObjectId(userId) };
+    const userUpdate = {
+      $push: {
+        friends: {
+          friendUsername: targetUsername,
+          friendId: targetUserId,
+          status: "pending",
+          initiated: "true",
+        },
+      },
+    };
+    const userResponse = await db
+      .collection("myusers")
+      .updateOne(userFilter, userUpdate);
 
-    res.status(200).json({ status: 200, message: "You have arrived" });
+    const targetFilter = { _id: ObjectId(targetUserId) };
+    const targetUpdate = {
+      $push: {
+        friends: {
+          friendUsername: username,
+          friendId: userId,
+          status: "pending",
+          initiated: "false",
+        },
+      },
+    };
+    const targetResponse = await db
+      .collection("myusers")
+      .updateOne(targetFilter, targetUpdate);
+
+    userResponse.modifiedCount && targetResponse.modifiedCount
+      ? res.status(200).json({
+          status: 200,
+          data: userResponse,
+          message: "Friend request pending",
+        })
+      : res.status(500).json({ status: 500, message: "Something went wrong" });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
+const updateFriendRequest = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    const { userId, targetUserId, statusUpdate } = req.body;
+
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    //update primary user
+    const userFilter = {
+      _id: ObjectId(userId),
+      "friends.friendId": targetUserId,
+    };
+    const userUpdate = {
+      $set: { "friends.$.status": statusUpdate },
+    };
+    const userResponse = await db
+      .collection("myusers")
+      .updateOne(userFilter, userUpdate);
+
+    //update target user
+    const targetFilter = {
+      _id: ObjectId(targetUserId),
+      "friends.friendId": userId,
+    };
+    const targetUpdate = {
+      $set: { "friends.$.status": statusUpdate },
+    };
+    const targetResponse = await db
+      .collection("myusers")
+      .updateOne(targetFilter, targetUpdate);
+
+    //return results
+
+    userResponse.modifiedCount && targetResponse.modifiedCount
+      ? res.status(200).json({
+          status: 200,
+          data: userResponse,
+          message: `Friend request ${statusUpdate}`,
+        })
+      : res.status(500).json({ status: 500, message: "Something went wrong" });
   } catch (err) {
     console.log(err);
   } finally {
@@ -195,4 +278,5 @@ module.exports = {
   getPosts,
   login,
   friendRequest,
+  updateFriendRequest,
 };

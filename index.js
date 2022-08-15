@@ -14,6 +14,7 @@ const {
   getAllUsers,
   getAuthUser,
   login,
+  updateFriendRequest,
 } = require("./handlers");
 
 express()
@@ -47,6 +48,7 @@ express()
 
   .post("/login/", login)
   .post("/friendrequest", friendRequest)
+  .post("/updatefriend", updateFriendRequest)
 
   // this is our catch all endpoint.
   .get("*", (req, res) => {
