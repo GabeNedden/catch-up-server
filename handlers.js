@@ -239,6 +239,33 @@ const getSharedPosts = async (req, res) => {
   }
 };
 
+const getSharedAndPublic = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  const { userId } = req.params;
+
+  try {
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const query = { $or: [{ sharedWith: userId }, { public: true }] };
+
+    const response = await db.collection("posts").find(query).toArray();
+
+    console.log(response);
+
+    response
+      ? res.status(200).json({ status: 200, data: response })
+      : res.status(404).json({ status: 404, message: "Posts not found" });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 const getGroups = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -353,6 +380,7 @@ module.exports = {
   getPosts,
   getSharedPosts,
   getPublicPosts,
+  getSharedAndPublic,
   getUserPosts,
   login,
   friendRequest,

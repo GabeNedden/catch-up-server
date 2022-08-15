@@ -13,6 +13,7 @@ const {
   getPosts,
   getPublicPosts,
   getSharedPosts,
+  getSharedAndPublic,
   getUserPosts,
   getAllUsers,
   getAuthUser,
@@ -49,6 +50,7 @@ express()
   .get("/posts/:userId", getUserPosts)
   .get("/publicposts/", getPublicPosts)
   .get("/sharedposts/:userId", getSharedPosts)
+  .get("/sharedpublicposts/:userId", getSharedAndPublic)
   .get("/users", getAllUsers)
   .get("/user/:id", getAuthUser)
 
