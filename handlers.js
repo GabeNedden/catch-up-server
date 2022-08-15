@@ -256,7 +256,7 @@ const getSharedAndPublic = async (req, res) => {
     console.log(response);
 
     response
-      ? res.status(200).json({ status: 200, data: response })
+      ? res.status(200).json({ status: 200, data: response.reverse() })
       : res.status(404).json({ status: 404, message: "Posts not found" });
   } catch (err) {
     res.status(500).json({ status: 500, error: err });
