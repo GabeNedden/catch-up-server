@@ -24,6 +24,58 @@ const test = async (req, res) => {
   }
 };
 
+const createPost = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    const {
+      userId,
+      username,
+      location,
+      sharedWith,
+      title,
+      body,
+      public,
+      startTime,
+      endTime,
+      now,
+      category,
+    } = req.body;
+
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const start = now ? new Date() : startTime;
+
+    const doc = {
+      owner: userId,
+      location: location,
+      username: username,
+      title: title,
+      body: body,
+      public: public,
+      startTime: start,
+      endTime: endTime,
+      sharedWith: sharedWith,
+      category,
+    };
+
+    const newPost = await db.collection("posts").insertOne(doc);
+
+    newPost
+      ? res.status(200).json({ status: 200, data: newPost })
+      : res
+          .status(500)
+          .json({ status: 500, message: "An unknown error occured" });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 const friendRequest = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -374,6 +426,7 @@ const login = async (req, res) => {
 
 module.exports = {
   test,
+  createPost,
   getAllUsers,
   getAuthUser,
   getGroups,
