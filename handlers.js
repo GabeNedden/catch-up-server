@@ -39,8 +39,8 @@ const friendRequest = async (req, res) => {
         friends: {
           friendUsername: targetUsername,
           friendId: targetUserId,
-          status: "pending",
-          initiated: "true",
+          status: "Pending",
+          initiated: true,
         },
       },
     };
@@ -54,8 +54,8 @@ const friendRequest = async (req, res) => {
         friends: {
           friendUsername: username,
           friendId: userId,
-          status: "pending",
-          initiated: "false",
+          status: "Pending",
+          initiated: false,
         },
       },
     };
