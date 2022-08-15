@@ -11,6 +11,9 @@ const {
   friendRequest,
   getGroups,
   getPosts,
+  getPublicPosts,
+  getSharedPosts,
+  getUserPosts,
   getAllUsers,
   getAuthUser,
   login,
@@ -43,6 +46,9 @@ express()
   .get("/", test)
   .get("/groups", getGroups)
   .get("/posts", getPosts)
+  .get("/posts/:userId", getUserPosts)
+  .get("/publicposts/", getPublicPosts)
+  .get("/sharedposts/:userId", getSharedPosts)
   .get("/users", getAllUsers)
   .get("/user/:id", getAuthUser)
 

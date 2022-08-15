@@ -164,6 +164,81 @@ const getPosts = async (req, res) => {
   }
 };
 
+const getUserPosts = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  const { userId } = req.params;
+  try {
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const query = { owner: userId };
+
+    const response = await db.collection("posts").find(query).toArray();
+
+    res.status(200).json({ status: 200, data: response });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
+const getPublicPosts = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const response = await db
+      .collection("posts")
+      .find({ public: true })
+      .toArray();
+
+    console.log(response);
+
+    response
+      ? res.status(200).json({ status: 200, data: response })
+      : res.status(404).json({ status: 404, message: "Posts not found" });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
+const getSharedPosts = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  const { userId } = req.params;
+
+  try {
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const query = { sharedWith: userId };
+
+    const response = await db.collection("posts").find(query).toArray();
+
+    console.log(response);
+
+    response
+      ? res.status(200).json({ status: 200, data: response })
+      : res.status(404).json({ status: 404, message: "Posts not found" });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 const getGroups = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -276,6 +351,9 @@ module.exports = {
   getAuthUser,
   getGroups,
   getPosts,
+  getSharedPosts,
+  getPublicPosts,
+  getUserPosts,
   login,
   friendRequest,
   updateFriendRequest,
