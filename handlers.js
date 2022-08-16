@@ -455,6 +455,36 @@ const login = async (req, res) => {
   }
 };
 
+const joinGroup = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    const { groupId, userId } = req.body;
+
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const filter = {
+      _id: ObjectId(groupId),
+    };
+
+    const updateDoc = {
+      $push: {
+        members: userId,
+      },
+    };
+
+    const response = await db.collection("groups").updateOne(filter, updateDoc);
+
+    res.status(200).json({ status: 200, data: response });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 module.exports = {
   test,
   createPost,
@@ -467,6 +497,7 @@ module.exports = {
   getPublicPosts,
   getSharedAndPublic,
   getUserPosts,
+  joinGroup,
   login,
   friendRequest,
   updateFriendRequest,
