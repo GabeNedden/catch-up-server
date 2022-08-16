@@ -458,7 +458,7 @@ const login = async (req, res) => {
 const joinGroup = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
-    const { groupId, userId } = req.body;
+    const { groupId, userId, username } = req.body;
 
     await client.connect();
     const db = client.db("catchup");
@@ -470,7 +470,7 @@ const joinGroup = async (req, res) => {
 
     const updateDoc = {
       $push: {
-        members: userId,
+        members: { id: userId, username: username },
       },
     };
 
