@@ -76,6 +76,37 @@ const createPost = async (req, res) => {
   }
 };
 
+const createGroup = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    const { admins, groupName, members, userId } = req.body;
+
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const doc = {
+      name: groupName,
+      members: [members],
+      admins: [userId, ...admins],
+    };
+
+    const newGroup = await db.collection("groups").insertOne(doc);
+
+    newGroup
+      ? res.status(200).json({ status: 200, data: newGroup })
+      : res
+          .status(500)
+          .json({ status: 500, message: "An unknown error occured" });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 const friendRequest = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -427,6 +458,7 @@ const login = async (req, res) => {
 module.exports = {
   test,
   createPost,
+  createGroup,
   getAllUsers,
   getAuthUser,
   getGroups,

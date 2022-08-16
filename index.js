@@ -9,6 +9,7 @@ let port = process.env.PORT || 8001;
 const {
   test,
   createPost,
+  createGroup,
   friendRequest,
   getGroups,
   getPosts,
@@ -59,6 +60,7 @@ express()
   .post("/friendrequest", friendRequest)
   .post("/updatefriend", updateFriendRequest)
   .post("/newpost", createPost)
+  .post("/newgroup", createGroup)
 
   // this is our catch all endpoint.
   .get("*", (req, res) => {
