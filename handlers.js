@@ -80,7 +80,7 @@ const createGroup = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   try {
-    const { admins, groupName, members, userId } = req.body;
+    const { admins, groupName, members, userId, username } = req.body;
 
     await client.connect();
     const db = client.db("catchup");
@@ -88,8 +88,8 @@ const createGroup = async (req, res) => {
 
     const doc = {
       name: groupName,
-      members: [members],
-      admins: [userId, ...admins],
+      members: [{ id: userId, username: username }, ...members],
+      admins: [{ id: userId, username: username }, ...admins],
     };
 
     const newGroup = await db.collection("groups").insertOne(doc);
