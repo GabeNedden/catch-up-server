@@ -465,6 +465,7 @@ const login = async (req, res) => {
         authId: user.sub,
         username: authUserDoc.username,
         circles: [],
+        friends: [],
       };
 
       //insert doc to myusercollection
