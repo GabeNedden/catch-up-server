@@ -24,6 +24,43 @@ const test = async (req, res) => {
   }
 };
 
+const createComment = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    const { postId, userId, username, comment } = req.body;
+
+    await client.connect();
+    const db = client.db("catchup");
+    console.log("connected");
+
+    const filter = {
+      _id: ObjectId(postId),
+    };
+
+    const updateDoc = {
+      $push: {
+        comments: { id: userId, username: username, body: comment },
+      },
+    };
+
+    const newComment = await db
+      .collection("posts")
+      .updateOne(filter, updateDoc);
+
+    newComment
+      ? res.status(200).json({ status: 200, data: newComment })
+      : res
+          .status(500)
+          .json({ status: 500, message: "An unknown error occured" });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+    console.log("disconnected");
+  }
+};
+
 const createPost = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -487,6 +524,7 @@ const joinGroup = async (req, res) => {
 
 module.exports = {
   test,
+  createComment,
   createPost,
   createGroup,
   getAllUsers,

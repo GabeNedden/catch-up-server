@@ -8,6 +8,7 @@ let port = process.env.PORT || 8001;
 
 const {
   test,
+  createComment,
   createPost,
   createGroup,
   friendRequest,
@@ -60,6 +61,7 @@ express()
   .post("/login/", login)
   .post("/friendrequest", friendRequest)
   .post("/updatefriend", updateFriendRequest)
+  .post("/newcomment", createComment)
   .post("/newpost", createPost)
   .post("/newgroup", createGroup)
 
